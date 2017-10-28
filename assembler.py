@@ -13,12 +13,27 @@ import sys
 
 #Translates the identity
 def identify(line):
-  if(line[0] == @):
-      kind = 
+  aTypes = {"M", "!M", "-M", "M+1", "M-1", "D+M", "D-M", "M-D", "D&M", "D|M"}
+  dTypes = {"0", "1", "-1", "D", "A", "!D", "!A", "-D", "-A", "D+1", "A+1",
+            "D+A", "D-A", "A-D", "D&A", "D|A"}
+  if aTypes in line:
+      return 1
+  if dTypes in line:
+      return 0
+  print "Type could not be confirmed. Type set to non-A."
+  return 0
 
-  return kind
 #Translates jump
 def jump(line):
+  
+  jumps = {"JGT" : "001",
+           "JEQ" : "010",
+           "JGE" : "011",
+           "JLT" : "100",
+           "JNE" : "101",
+           "JLE" : "110",
+           "JMP" : "111"}
+  
   return jump
 #Translates dest
 def dest(line):
@@ -43,6 +58,7 @@ def processFile(contents):
     temp = comp(line)
     comp.append(line)
   return
+
 def main():
   for program in sys.argv[1:]:
       contents = []
