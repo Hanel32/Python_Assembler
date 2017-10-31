@@ -35,11 +35,11 @@ def identify(line):
   
   for op in aTypes:
       if op in line:
-          return 1
+          return "1"
   if dTypes in line:
-      return 0
+      return "0"
   print "Type could not be confirmed. Type set to non-A."
-  return 0
+  return "0"
 
 #Translates jump
 #In order to find this, need to cut off all string items _before_the first semicolon.
@@ -53,21 +53,30 @@ def jump(line):
            "JLE" : "110",
            "JMP" : "111"}
   line = line.split(';')[-1]
-  
-  return jump
+  for key in jumps.keys():
+    if key in line:
+      return jumps[key]
+  #Note: This is also default for no jump. No worries!:D
+  print("No parse key found for jump! Could be no jump...")
+  return "000"
+    
 #Translates dest
 #In order to find this, need to cut off all string items beyond '='.
 #TODO: Fix the line splitting
 def dest(line):
-  dests = {"M"  : "001",
-           "D"  : "010",
-           "MD" : "011",
-           "A"  : "100",
+  dests = {"AMD": "111"
            "AM" : "101",
            "AD" : "110",
-           "AMD": "111"}
+           "MD" : "011",
+           "M"  : "001",
+           "D"  : "010",
+           "A"  : "100",}
   line = line.split('=')[-1]
-  return dest
+  for key in dests.keys():
+    if key in line:
+      return dests[key]
+  print("No parse key found for dest!")
+  return "000"
 #Translates comp
 #Same deal as identify with the string splicing, but this module has a dictionary w/ keys
 #Idea is to iterate the keys from left to right, with the most basal keys being at the end of
@@ -95,6 +104,8 @@ def comp(line):
   for key in comps.keys():
     if key in line:
       return comps[key]
+  print("No parse key found for comp!")
+  return "000000"
 #Removes comments from the files
 
 def processFile(contents):
