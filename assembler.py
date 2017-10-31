@@ -161,10 +161,10 @@ def main():
           line = line.split()         #Tokenizes the line
           
           #Builds the symbol table
-          if(line[0] == '@' || line[0] == '('):
+          if(line[0] == '@' or line[0] == '('):
             location = getLocation(line)
             #Only add to the symbol table if the location is not there, and the location is not an integer.
-            if location not in stable and !location.isdigit():
+            if location not in stable and not location.isdigit():
               stable[location] = curr
               curr += 1
       f.close()
