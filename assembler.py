@@ -72,6 +72,7 @@ def dest(line):
       return dests[key]
   print("No parse key found for dest!")
   return "000"
+
 #Translates comp
 #Same deal as identify with the string splicing, but this module has a dictionary w/ keys
 #Idea is to iterate the keys from left to right, with the most basal keys being at the end of
@@ -123,22 +124,33 @@ def processFile(contents):
     temp = "111" + ids[c] + comp[c] + dest[c] + jump[c]
     inst.append(temp)
     c += 1
-  return inst
+  return
+
+#Gets the location of the memory address.
+def getLocation(line):
+  
 
 #TODO: If line starts with ( or @, it's an A-instruction. Process differently than D instructions.
 #      Create the symbol table with goto for the ( instructions as well as the @ instructions.
 def main():
+  #Symbol table
+  stable = {}
+  
+  #Program assembling.
   for program in sys.argv[1:]:
       contents = []
       f = open(program)
       for line in f:
-          if(line[0:2] != "//"):  #Checks for the line beginning with a comment.
-            line = line.split     #Tokenizes the words
-            line = line.strip     #Removes whitespace from the tokenized words.
-            contents.append(line)
+          line = line.strip("\r")     #Removes all \r
+          line = line.strip("\n")     #Removes all \n
+          line = line.split("//")[-1] #Removes everything beyond a comment in a line.
+          line = line.split()         #Tokenizes the line
+          if(line[0] == '@' || line[0] == '('):
+            location = getLocation(line)
       f.close()
       contents = processFile(contents)
       #TODO: implement an output stream. Need to extract file name and turn from asm type to assembled type.
+      #Selfnote: Before for splitting is [0], and after is [-1]. Important distinction.
       
               
               
