@@ -25,8 +25,8 @@ def identify(line):
   #      String processing and whatnot not actually necessary, not sure why I didn't see this at first.
   aTypes = "M"
   dTypes = ["D", "0", "1"]
-  line = line.split(";")[-1]
-  line = line.rpartition('=')[-1]
+  line = line.split(";")[0]       #Everything before ;
+  line = line.rpartition('=')[-1] #Everything after  =
   
   if op in line:
     return "1"
@@ -47,7 +47,8 @@ def jump(line):
            "JNE" : "101",
            "JLE" : "110",
            "JMP" : "111"}
-  line = line.split(';')[-1]
+  line = line.split(';')[-1]       #Everything after ;
+  
   for key in jumps.keys():
     if key in line:
       return jumps[key]
@@ -66,7 +67,8 @@ def dest(line):
            "M"  : "001",
            "D"  : "010",
            "A"  : "100",}
-  line = line.split('=')[-1]
+  line = line.split('=')[0]         #Everything before =
+  
   for key in dests.keys():
     if key in line:
       return dests[key]
@@ -112,6 +114,7 @@ def processFile(contents):
   comp = []
   temp = []
   c    = 0
+  
   for line in contents:
     temp = identify(line)
     ids.append(temp)
@@ -128,13 +131,24 @@ def processFile(contents):
 
 #Gets the location of the memory address.
 def getLocation(line):
-  
+  if(line[0] == '@'):
+    line = line.split('@')[-1]       #Removes the @
+    line = line.lower()
+  else if(line[0] == '('):
+    line = line.split('(')[-1]       #Removes the left parenthesis
+    line = line.split(')')[0]        #Removes right parenthesis and beyond.
+    line = line.lower()
+  print("Line is now: ")
+  print line
+  return line
+         
 
 #TODO: If line starts with ( or @, it's an A-instruction. Process differently than D instructions.
 #      Create the symbol table with goto for the ( instructions as well as the @ instructions.
 def main():
   #Symbol table
   stable = {}
+  curr   = 0
   
   #Program assembling.
   for program in sys.argv[1:]:
@@ -145,8 +159,14 @@ def main():
           line = line.strip("\n")     #Removes all \n
           line = line.split("//")[-1] #Removes everything beyond a comment in a line.
           line = line.split()         #Tokenizes the line
+          
+          #Builds the symbol table
           if(line[0] == '@' || line[0] == '('):
             location = getLocation(line)
+            #Only add to the symbol table if the location is not there, and the location is not an integer.
+            if location not in stable and !location.isdigit():
+              stable[location] = curr
+              curr += 1
       f.close()
       contents = processFile(contents)
       #TODO: implement an output stream. Need to extract file name and turn from asm type to assembled type.
