@@ -27,7 +27,7 @@ def identify(line):
             "A+1", "D+A", 
             "D-A", "A-D", 
             "D&A", "D|A"}
-  line = line.split(";")[0]
+  line = line.split(";")[-1]
   line = line.rpartition('=')[-1]
   
   for op in aTypes:
@@ -48,10 +48,11 @@ def jump(line):
            "JNE" : "101",
            "JLE" : "110",
            "JMP" : "111"}
-  line = line.split(";")[0]
+  line = line.split(';')[-1]
   
   return jump
 #Translates dest
+#In order to find this, need to cut off all string items beyond '='.
 def dest(line):
   dests = {"M"  : "001",
            "D"  : "010",
@@ -60,6 +61,7 @@ def dest(line):
            "AM" : "101",
            "AD" : "110",
            "AMD": "111"}
+  line = line.split('=')[-1]
   return dest
 #Translates comp
 def comp(line):
@@ -81,12 +83,15 @@ def comp(line):
            ["D|A", "D|M"]: "010101"}
   return comp
 #Removes comments from the files
+
 def processFile(contents):
+  inst = []
   ids  = []
   jump = []
   dest = []
   comp = []
   temp = []
+  c    = 0
   for line in contents:
     temp = identify(line)
     ids.append(temp)
@@ -95,7 +100,10 @@ def processFile(contents):
     temp = dest(line)
     dest.append(temp)
     temp = comp(line)
-    comp.append(line)
+    comp.append(temp)
+    temp = "111" ++ ids[c] ++ comp[c] ++ dest[c] ++ jump[c]
+    inst.append(temp)
+    c += 1
   return
 
 def main():
