@@ -101,7 +101,7 @@ def processFile(contents):
     dest.append(temp)
     temp = comp(line)
     comp.append(temp)
-    temp = "111" ++ ids[c] ++ comp[c] ++ dest[c] ++ jump[c]
+    temp = "111" + ids[c] + comp[c] + dest[c] + jump[c]
     inst.append(temp)
     c += 1
   return
