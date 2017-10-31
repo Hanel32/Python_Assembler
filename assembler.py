@@ -12,6 +12,7 @@ Purpose: Parses assembly code, and transfers to bytecode.
 import sys
 
 #Translates the identity
+#In order to find this, need to cut off all string items before "=" and after ";"
 def identify(line):
   aTypes = {"M", "!M", 
             "-M", "M+1", 
@@ -26,6 +27,9 @@ def identify(line):
             "A+1", "D+A", 
             "D-A", "A-D", 
             "D&A", "D|A"}
+  line = line.split(";")[0]
+  line = line.rpartition('=')[-1]
+  
   for op in aTypes:
       if op in line:
           return 1
