@@ -131,6 +131,9 @@ def processFile(contents):
 
 #Gets the location of the memory address.
 def getLocation(line):
+  #For R0 -> R15 removes R to explicity call the register by its location.
+  line = line.replace("R", "")
+  
   if(line[0] == '@'):
     line = line.split('@')[-1]       #Removes the @
     line = line.lower()
