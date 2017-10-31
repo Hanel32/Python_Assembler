@@ -64,6 +64,7 @@ def dest(line):
   line = line.split('=')[-1]
   return dest
 #Translates comp
+#Same deal as identify with the string splicing, but this module has a dictionary w/ keys
 def comp(line):
   comps = {["0"]         : "101010",
            ["1"]         : "111111",
@@ -81,6 +82,8 @@ def comp(line):
            ["A-D", "M-D"]: "000111",
            ["D&A", "D&M"]: "000000",
            ["D|A", "D|M"]: "010101"}
+  line = line.split(";")[-1]
+  line = line.rpartition('=')[-1]
   return comp
 #Removes comments from the files
 
