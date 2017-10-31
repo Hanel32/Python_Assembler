@@ -125,6 +125,8 @@ def processFile(contents):
     c += 1
   return inst
 
+#TODO: If line starts with ( or @, it's an A-instruction. Process differently than D instructions.
+#      Create the symbol table with goto for the ( instructions as well as the @ instructions.
 def main():
   for program in sys.argv[1:]:
       contents = []
