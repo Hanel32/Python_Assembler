@@ -35,6 +35,7 @@ def identify(line):
   return 0
 
 #Translates jump
+#In order to find this, need to cut off all string items beyond the first semicolon.
 def jump(line):
   jumps = {"JGT" : "001",
            "JEQ" : "010",
@@ -43,6 +44,7 @@ def jump(line):
            "JNE" : "101",
            "JLE" : "110",
            "JMP" : "111"}
+  line = line.split(";")[0]
   
   return jump
 #Translates dest
