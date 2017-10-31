@@ -8,6 +8,12 @@ Project 6 for CSCE 312; Computer Organization
 Purpose: Parses assembly code, and transfers to bytecode.
 """
 
+#
+#TODO:
+#  - Create and account for a symbol table for address instructions.
+#  - Account for (JUMP) places and gotos.
+#  - Fix the string splitting. The dictionaries are good, just confirm that the string split the correct way.
+
 #Allow for command-line arguments to be utilized.
 import sys
 
