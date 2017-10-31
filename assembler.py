@@ -17,16 +17,16 @@ def identify(line):
   #A-type commands to search for
   #TODO: Just make this a search for "M".
   #      String processing and whatnot not actually necessary, not sure why I didn't see this at first.
-  aTypes = {"M", "!M", 
-            "-M", "M+1", 
+  aTypes = {"M",   "!M", 
+            "-M",  "M+1", 
             "M-1", "D+M", 
             "D-M", "M-D", 
             "D&M", "D|M"}
-  dTypes = {"0", "1", 
-            "-1", "D", 
-            "A", "!D", 
-            "!A", "-D", 
-            "-A", "D+1", 
+  dTypes = {"0",   "1", 
+            "-1",  "D", 
+            "A",   "!D", 
+            "!A",  "-D", 
+            "-A",  "D+1", 
             "A+1", "D+A", 
             "D-A", "A-D", 
             "D&A", "D|A"}
@@ -70,6 +70,8 @@ def dest(line):
   return dest
 #Translates comp
 #Same deal as identify with the string splicing, but this module has a dictionary w/ keys
+#Idea is to iterate the keys from left to right, with the most basal keys being at the end of
+#the options. Obvious design principal, just thought I'd state.
 def comp(line):
   comps = {["D+1"]       : "011111",
            ["A+1", "M+1"]: "110111",
@@ -78,19 +80,19 @@ def comp(line):
            ["A-D", "M-D"]: "000111",
            ["D&A", "D&M"]: "000000",
            ["D|A", "D|M"]: "010101",
-           ["0"]    :"101010",
-           ["1"]         : "111111",
            ["-1"]        : "111010",
-           ["D"]         : "001100",
-           ["A","M"]     : "110000",
            ["!D"]        : "001101",
            ["!A", "!M"]  : "110001",
            ["-D"]        : "001111",
-           ["-A","-M"]   : "110011",}
+           ["-A","-M"]   : "110011",
+           ["D"]         : "001100",
+           ["A","M"]     : "110000",
+           ["0"]         : "101010",
+           ["1"]         : "111111",}
   line = line.split(";")[-1]
   line = line.rpartition('=')[-1]
   
-  for key in comps.iteritems():
+  for key in comps.keys():
     if key in line:
       return comps[key]
 #Removes comments from the files
