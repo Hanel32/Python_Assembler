@@ -23,27 +23,16 @@ def identify(line):
   #A-type commands to search for
   #TODO: Just make this a search for "M".
   #      String processing and whatnot not actually necessary, not sure why I didn't see this at first.
-  aTypes = {"M",   "!M", 
-            "-M",  "M+1", 
-            "M-1", "D+M", 
-            "D-M", "M-D", 
-            "D&M", "D|M"}
-  dTypes = {"0",   "1", 
-            "-1",  "D", 
-            "A",   "!D", 
-            "!A",  "-D", 
-            "-A",  "D+1", 
-            "A+1", "D+A", 
-            "D-A", "A-D", 
-            "D&A", "D|A"}
+  aTypes = "M"
+  dTypes = ["D", "0", "1"]
   line = line.split(";")[-1]
   line = line.rpartition('=')[-1]
   
-  for op in aTypes:
+  if op in line:
+    return "1"
+  for op in dTypes:
       if op in line:
-          return "1"
-  if dTypes in line:
-      return "0"
+          return "0"
   print "Type could not be confirmed. Type set to non-A."
   return "0"
 
