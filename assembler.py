@@ -134,7 +134,7 @@ def processFile(contents):
     temp = "111" + ids[c] + comp[c] + dest[c] + jump[c]
     inst.append(temp)
     c += 1
-  return
+  return inst
 
 def main():
   for program in sys.argv[1:]:
@@ -147,6 +147,7 @@ def main():
             contents.append(line)
       f.close()
       contents = processFile(contents)
+      #TODO: implement an output stream. Need to extract file name and turn from asm type to assembled type.
       
               
               
