@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Oct 28 16:40:14 2017
-
 @author: Carson
-
 Project 6 for CSCE 312; Computer Organization
 Purpose: Parses assembly code, and transfers to bytecode.
 """
@@ -25,10 +23,13 @@ def identify(line):
   #      String processing and whatnot not actually necessary, not sure why I didn't see this at first.
   aTypes = "M"
   dTypes = ["D", "0", "1"]
-  line = line.split(";")[0]       #Everything before ;
+  print "Line identifying is: "
+  print line
+  
+  line = line.split(';')[-1]       #Everything before ;
   line = line.rpartition('=')[-1] #Everything after  =
   
-  if op in line:
+  if aTypes in line:
     return "1"
   for op in dTypes:
       if op in line:
@@ -60,7 +61,7 @@ def jump(line):
 #In order to find this, need to cut off all string items beyond '='.
 #TODO: Fix the line splitting
 def dest(line):
-  dests = {"AMD": "111"
+  dests = {"AMD": "111",
            "AM" : "101",
            "AD" : "110",
            "MD" : "011",
@@ -96,7 +97,7 @@ def comp(line):
            ["A","M"]     : "110000",
            ["0"]         : "101010",
            ["1"]         : "111111",}
-  line = line.split(";")[-1]
+  line = line.split(";")[0]
   line = line.rpartition('=')[-1]
   
   for key in comps.keys():
@@ -116,16 +117,16 @@ def processFile(contents):
   c    = 0
   
   for line in contents:
-    temp = identify(line)
-    ids.append(temp)
-    temp = jump(line)
-    jump.append(temp)
-    temp = dest(line)
-    dest.append(temp)
-    temp = comp(line)
-    comp.append(temp)
-    temp = "111" + ids[c] + comp[c] + dest[c] + jump[c]
-    inst.append(temp)
+    tempI = identify(line)
+    ids.append(tempI)
+    tempJ = jump(line)
+    jump.append(tempJ)
+    tempL = dest(line)
+    dest.append(tempL)
+    tempC = comp(line)
+    comp.append(tempC)
+    tempInst = "111" + ids[c] + comp[c] + dest[c] + jump[c]
+    inst.append(tempInst)
     c += 1
   return
 
@@ -135,11 +136,11 @@ def getLocation(line):
   line = line.replace("R", "")
   
   if(line[0] == '@'):
-    line = line.split('@')[-1]       #Removes the @
+    line = line.split('@')[0]       #Removes the @
     line = line.lower()
-  else if(line[0] == '('):
-    line = line.split('(')[-1]       #Removes the left parenthesis
-    line = line.split(')')[0]        #Removes right parenthesis and beyond.
+  if(line[0] == '('):
+    line = line.split('(')[0]       #Removes the left parenthesis
+    line = line.split(')')[-1]        #Removes right parenthesis and beyond.
     line = line.lower()
   print("Line is now: ")
   print line
@@ -158,20 +159,30 @@ def main():
       contents = []
       f = open(program)
       for line in f:
+          print "Line at start: "
+          print line
           line = line.strip("\r")     #Removes all \r
           line = line.strip("\n")     #Removes all \n
-          line = line.split("//")[-1] #Removes everything beyond a comment in a line.
+          line = line.split("//")[0]  #Removes everything beyond a comment in a line.
           line = line.split()         #Tokenizes the line
           
           #Builds the symbol table
-          if(line[0] == '@' or line[0] == '('):
-            location = getLocation(line)
-            #Only add to the symbol table if the location is not there, and the location is not an integer.
-            if location not in stable and not location.isdigit():
-              stable[location] = curr
-              curr += 1
+          if line:
+            if("@" in line or "(" in line):
+              print "Address instruction parsed"
+              location = getLocation(line)
+              #Only add to the symbol table if the location is not there, and the location is not an integer.
+              if location not in stable and not location.isdigit():
+                stable[location] = curr
+                curr += 1
+            else:
+                contents.append(''.join(line))
+          print "Line after processing: "
+          print line
+
       f.close()
       contents = processFile(contents)
+      print contents
       #TODO: implement an output stream. Need to extract file name and turn from asm type to assembled type.
       #Selfnote: Before for splitting is [0], and after is [-1]. Important distinction.
       
