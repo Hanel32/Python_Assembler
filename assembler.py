@@ -81,24 +81,22 @@ def dest(line):
 #Idea is to iterate the keys from left to right, with the most basal keys being at the end of
 #the options. Obvious design principal, just thought I'd state.
 def comp(line):
-  comps = {["D+1"]       : "011111",
-           ["A+1", "M+1"]: "110111",
-           ["D+A", "D+M"]: "000010",
-           ["D-A", "D-M"]: "010011",
-           ["A-D", "M-D"]: "000111",
-           ["D&A", "D&M"]: "000000",
-           ["D|A", "D|M"]: "010101",
-           ["-1"]        : "111010",
-           ["!D"]        : "001101",
-           ["!A", "!M"]  : "110001",
-           ["-D"]        : "001111",
-           ["-A","-M"]   : "110011",
-           ["D"]         : "001100",
-           ["A","M"]     : "110000",
-           ["0"]         : "101010",
-           ["1"]         : "111111",}
+  comps = {"D+1": "011111","A+1": "110111",
+           "M+1": "110111","D+A": "000010",
+           "D+M": "000010","D-A": "010011",
+           "D-M": "010011","A-D": "000111",
+           "M-D": "000111","D&A": "000000",
+           "D&M": "000000","D|A": "010101",
+           "D|M": "010101","-1" : "111010",
+           "!D" : "001101","!A" : "110001",
+           "!M" : "110001","-D" : "001111",
+           "-A" : "110011","-M" : "110011",
+           "D"  : "001100","A"  : "110000",
+           "M"  : "110000","0"  : "101010",
+           "1"  : "111111"}
   line = line.split(";")[0]
   line = line.rpartition('=')[-1]
+  line = "".join(line)
   
   for key in comps.keys():
     if key in line:
@@ -108,27 +106,29 @@ def comp(line):
 #Removes comments from the files
 
 def processFile(contents):
-  inst = []
-  ids  = []
-  jump = []
-  dest = []
-  comp = []
-  temp = []
-  c    = 0
+  inst  = []
+  ids   = []
+  jumps = []
+  dests = []
+  comps = []
+  temp  = ""
+  c     = 0
   
   for line in contents:
-    tempI = identify(line)
-    ids.append(tempI)
-    tempJ = jump(line)
-    jump.append(tempJ)
-    tempL = dest(line)
-    dest.append(tempL)
-    tempC = comp(line)
-    comp.append(tempC)
-    tempInst = "111" + ids[c] + comp[c] + dest[c] + jump[c]
-    inst.append(tempInst)
+    temp = identify(line)
+    ids.append(temp)
+    print "Line before error: "
+    print line
+    temp = jump(line)
+    jumps.append(temp)
+    temp = dest(line)
+    dests.append(temp)
+    temp = comp(line)
+    comps.append(temp)
+    temp = "111" + ids[c] + comps[c] + dests[c] + jumps[c]
+    inst.append(temp)
     c += 1
-  return
+  return inst
 
 #Gets the location of the memory address.
 def getLocation(line):
@@ -175,12 +175,18 @@ def main():
               if location not in stable and not location.isdigit():
                 stable[location] = curr
                 curr += 1
+              else:
+                pass
             else:
-                contents.append(''.join(line))
+                print "Added to contents!"
+                contents.append("".join(line))
+          else:
+              pass
           print "Line after processing: "
           print line
 
       f.close()
+      print contents
       contents = processFile(contents)
       print contents
       #TODO: implement an output stream. Need to extract file name and turn from asm type to assembled type.
