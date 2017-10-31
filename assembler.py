@@ -14,6 +14,9 @@ import sys
 #Translates the identity
 #In order to find this, need to cut off all string items before "=" and after ";"
 def identify(line):
+  #A-type commands to search for
+  #TODO: Just make this a search for "M".
+  #      String processing and whatnot not actually necessary, not sure why I didn't see this at first.
   aTypes = {"M", "!M", 
             "-M", "M+1", 
             "M-1", "D+M", 
@@ -39,7 +42,8 @@ def identify(line):
   return 0
 
 #Translates jump
-#In order to find this, need to cut off all string items beyond the first semicolon.
+#In order to find this, need to cut off all string items _before_the first semicolon.
+#TODO: Fix the line splitting
 def jump(line):
   jumps = {"JGT" : "001",
            "JEQ" : "010",
@@ -53,6 +57,7 @@ def jump(line):
   return jump
 #Translates dest
 #In order to find this, need to cut off all string items beyond '='.
+#TODO: Fix the line splitting
 def dest(line):
   dests = {"M"  : "001",
            "D"  : "010",
@@ -66,7 +71,14 @@ def dest(line):
 #Translates comp
 #Same deal as identify with the string splicing, but this module has a dictionary w/ keys
 def comp(line):
-  comps = {["0"]         : "101010",
+  comps = {["D+1"]       : "011111",
+           ["A+1", "M+1"]: "110111",
+           ["D+A", "D+M"]: "000010",
+           ["D-A", "D-M"]: "010011",
+           ["A-D", "M-D"]: "000111",
+           ["D&A", "D&M"]: "000000",
+           ["D|A", "D|M"]: "010101",
+           ["0"]    :"101010",
            ["1"]         : "111111",
            ["-1"]        : "111010",
            ["D"]         : "001100",
@@ -74,17 +86,13 @@ def comp(line):
            ["!D"]        : "001101",
            ["!A", "!M"]  : "110001",
            ["-D"]        : "001111",
-           ["-A","-M"]   : "110011",
-           ["D+1"]       : "011111",
-           ["A+1", "M+1"]: "110111",
-           ["D+A", "D+M"]: "000010",
-           ["D-A", "D-M"]: "010011",
-           ["A-D", "M-D"]: "000111",
-           ["D&A", "D&M"]: "000000",
-           ["D|A", "D|M"]: "010101"}
+           ["-A","-M"]   : "110011",}
   line = line.split(";")[-1]
   line = line.rpartition('=')[-1]
-  return comp
+  
+  for key in comps.iteritems():
+    if key in line:
+      return comps[key]
 #Removes comments from the files
 
 def processFile(contents):
