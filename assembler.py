@@ -8,30 +8,22 @@ Purpose: Parses assembly code, and transfers to bytecode.
 
 #
 #TODO:
-#  - Create and account for a symbol table for address instructions.
-#  - Account for (JUMP) places and gotos.
-#  - Fix the string splitting. The dictionaries are good, just confirm that the string split the correct way.
+#  - All complete!
 
 #Allow for command-line arguments to be utilized.
 import sys
 
 #Translates the identity
-#In order to find this, need to cut off all string items before "=" and after ";"
 def identify(line):
   #A-type commands to search for
-  #TODO: Just make this a search for "M".
-  #      String processing and whatnot not actually necessary, not sure why I didn't see this at first.
   line = line.split(';')[0]       #Everything before ;
   line = line.rpartition('=')[-1] #Everything after  =
-
   
   if "M" in line:
     return "1"
   return "0"
 
 #Translates jump
-#In order to find this, need to cut off all string items _before_the first semicolon.
-#TODO: Fix the line splitting
 def jump(line):
   jumps = {"JGT" : "001",
            "JEQ" : "010",
@@ -48,8 +40,6 @@ def jump(line):
   return "000"
     
 #Translates dest
-#In order to find this, need to cut off all string items beyond '='.
-#TODO: Fix the line splitting
 def dest(line):
   dests = {"AMD": "111",
            "AM" : "101",
@@ -154,9 +144,6 @@ def int2bin(i):
         s = "0" + s
     return s
          
-
-#TODO: If line starts with ( or @, it's an A-instruction. Process differently than D instructions.
-#      Create the symbol table with goto for the ( instructions as well as the @ instructions.
 def main():
   #Symbol table
   stable = {"0" : "0000000000000000",
@@ -254,9 +241,5 @@ def main():
         f.write(event)
         f.write("\n")
       f.close()
-      #TODO: implement an output stream. Need to extract file name and turn from asm type to assembled type.
-      #Selfnote: Before for splitting is [0], and after is [-1]. Important distinction.
-              
-              
-        
+                      
 main()
